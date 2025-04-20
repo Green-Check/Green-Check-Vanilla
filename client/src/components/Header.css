@@ -1,0 +1,119 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .header {
+    position: relative;
+    position: sticky;
+    top: 0px;
+    background-color: grey;
+    display: flex;
+    z-index: 1000;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+  }
+  
+  .hamburger {
+    font-size: 1.5rem;
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+    margin-left: 1rem;
+  }
+  
+  /* Side menu styling */
+  .side-menu {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #444;
+    color: white;
+    padding-top: 4rem;
+    transition: right 0.3s ease;
+    z-index: 1001;
+  }
+  
+  .side-menu.open {
+    right: 0;
+  }
+  
+  .side-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .side-menu ul li {
+    padding: 1rem;
+    border-bottom: 1px solid #555;
+  }
+  
+  .side-menu ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .side-menu ul li a:hover {
+    background-color: #555;
+    display: block;
+  }
+  
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+  
+  /* Desktop view */
+  @media (min-width: 640px) {
+    .hamburger {
+      display: none;
+    }
+  
+    .side-menu {
+      position: static;
+      width: auto;
+      height: auto;
+      background: none;
+      display: flex;
+      flex-direction: row;
+      padding: 0;
+      left: 0 !important;
+    }
+  
+    .side-menu ul {
+      display: flex;
+    }
+  
+    .side-menu ul li {
+      border: none;
+      padding: 0 1rem;
+    }
+  
+    .overlay {
+      display: none;
+    }
+  }
+  

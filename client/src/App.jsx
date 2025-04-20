@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+
+// Lazy loading the components
+const Layout = lazy(() => import('./components/Layout'));
+const HomePage = lazy(() => import('./pages/HomePage'));
+const About = lazy(() => import('./pages/AboutPage'));
+const Profile = lazy(() => import('./pages/ProfilePage'));
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className='border-2 border-red-500 w-screen h-screen'>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* Layout component will wrap all routes */}
+          <Route path="/" element={<Layout />}>
+            {/* Default route (Home Page) */}
+            <Route index element={<HomePage />} />
+            {/* About Page */}
+            <Route path="about" element={<About />} />
+            {/* Profile Page */}
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </div>
+  );
 }
 
-export default App
+export default App;
