@@ -7,7 +7,7 @@ function Layout() {
   return (
     <div>
       <Header />
-      <main className='main border-2 border-amber-500 h-screen flex justify-center items-center'>
+      <main className='main max-w-screen h-screen flex justify-center items-center border-2 border-yellow-500'>
         <Outlet /> {/* This is where the content from each page will be rendered */}
       </main>
       <Footer />
