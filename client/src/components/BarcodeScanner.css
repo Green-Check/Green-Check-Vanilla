@@ -1,98 +1,13 @@
-client/src/components/BarcodeScanner.css
-
-/* .scan-line-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-} */
-
-/* .scan-line {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: rgba(255, 0, 0, 0.8);
-  animation: scan 2s linear infinite;
-} */
-
-/* Faded gradient edges at top and bottom */
-/* .scan-line-container::before,
-.scan-line-container::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 20%;
-  pointer-events: none;
-} */
-
-/* .scan-line-container::before {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
-}
-
-.scan-line-container::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-}
-
+/* Scanner line Animation */
 @keyframes scan {
-  0%   { top: 0%; }
+  0% { top: 0%; }
   100% { top: 100%; }
-} */
-
-
-// client/src/components/BarcodeScanner.css
-
-.scanner-overlay {
-  flex-direction: column;
-}
-
-.video-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.scan-line-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
 .scan-line {
   position: absolute;
   width: 100%;
   height: 2px;
-  background: rgba(255, 0, 0, 0.8);
-  animation: scan 2s linear infinite;
-}
-
-/* Faded gradient edges at top and bottom */
-.scan-line-container::before,
-.scan-line-container::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 20%;
-  pointer-events: none;
-}
-
-.scan-line-container::before {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
-}
-
-.scan-line-container::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-}
-
-@keyframes scan {
-  0%   { top: 0%; }
-  100% { top: 100%; }
+  background: rgba(255, 0, 0, 0.7);
+  animation: scan 2s infinite linear;
 }

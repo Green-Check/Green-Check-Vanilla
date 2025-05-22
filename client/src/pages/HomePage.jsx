@@ -73,7 +73,7 @@ const HomePage = () => {
           <Button
             variant="outlined"
             startIcon={<WalletIcon />}
-            onClick={() => setOpenDialog(true)}
+            onClick={() => setOpenDialog(!scanning)}
             sx={{
               backgroundColor: '#F5F5DC',      // beige background
               color: 'black',                  // black text
@@ -114,10 +114,7 @@ const HomePage = () => {
         </div>
         </form>
         {scanning && (
-            <BarcodeScanner
-              onDetected={handleBarcodeDetected}
-              onClose={() => setScanning(false)}
-            />
+            <BarcodeScanner scanning={scanning} setScanning={setScanning} product={product} setProduct={setProduct}/>
         )}
 
         {/* Product Display */}

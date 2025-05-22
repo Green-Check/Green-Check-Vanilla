@@ -1,90 +1,132 @@
-// client/src/components/BarcodeScanner.jsx
-import { BrowserMultiFormatReader } from '@zxing/browser';
-import { useEffect, useRef } from 'react';
-import './BarcodeScanner.css'; // import custom CSS for the scanner overlay
+import React, { useRef, useEffect, useState } from 'react';
+import Quagga from 'quagga'; // Make sure Quagga is installed
+import Button from '@mui/material/Button';
 
-const BarcodeScanner = ({ onDetected, onClose }) => {
-  const videoRef    = useRef(null);
-  const readerRef   = useRef(null);
-  const controlsRef = useRef(null);
-  const streamRef   = useRef(null);
+import './BarcodeScanner.css'; // For scan-line animation
+
+export default function BarcodeScanner({scanning, setScanning, product, setProduct}) {
+  const videoRef = useRef(null);
+  const [result, setResult] = useState('');
 
   useEffect(() => {
-    const reader = new BrowserMultiFormatReader();
-    readerRef.current = reader;
-
-    (async () => {
-      try {
-        // Try environment (back) camera first, fallback to user (selfie) camera
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } });
-        } catch (e) {
-          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    if (scanning) {
+      console.log('Initializing Quagga...');
+      Quagga.init({
+        inputStream: {
+          type: 'LiveStream',
+          target: videoRef.current,
+          constraints: {
+            facingMode: 'environment',
+          },
+        },
+        // locator: {
+        //   patchSize: 'medium',
+        //   halfSample: true,
+        // },
+        locator: {
+          patchSize: 'x-large', // Try 'large' or 'x-large'
+          halfSample: false,
+        },
+        numOfWorkers: navigator.hardwareConcurrency || 4,
+        decoder: {
+          readers: [
+                'code_128_reader',
+                'ean_reader',
+                'ean_8_reader',
+                'code_39_reader',
+                'upc_reader',
+                'upc_e_reader',
+                'codabar_reader'
+                ],      
+        },
+        locate: true,
+        debug: {
+          drawBoundingBox: true,
+          showFrequency: true,
+          drawScanline: true,
+          showPattern: true,
+        },
+      }, err => {
+        if (err) {
+          console.error('Quagga init error:', err);
+          return;
         }
-        // If environment camera fails, fallback to user camera
-        if (!stream) {
-          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        }
-        streamRef.current = stream;
-        const track = stream.getVideoTracks()[0];
-        const settings = track.getSettings();
-        const deviceId = settings.deviceId;
+        console.log('Quagga initialized. Starting scanner...');
+        Quagga.start();
+      });
 
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => videoRef.current.play();
+      Quagga.onDetected(handleDetected);
 
-        const controls = await reader.decodeFromVideoDevice(
-          deviceId,
-          videoRef.current,
-          (result) => result && onDetected(result.getText())
-        );
-        controlsRef.current = controls;
-      } catch (err) {
-        console.error("🛑 Scanner setup failed:", err);
-        onClose();
-      }
-    })();
+      Quagga.onProcessed(result => {
+        console.log('Processing frame...', result);
+      });
+    }
 
     return () => {
-      if (controlsRef.current) controlsRef.current.stop();
-      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
-      if (videoRef.current) videoRef.current.srcObject = null;
+      Quagga.offDetected(handleDetected);
+      if (scanning) {
+        console.log('Stopping Quagga...');
+        Quagga.stop();
+      }
     };
-  }, [onDetected, onClose]);
+  }, [scanning]);
 
-  const handleClose = () => {
-    if (controlsRef.current) controlsRef.current.stop();
-    else if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
-    if (videoRef.current) videoRef.current.srcObject = null;
-    onClose();
-  };
+  function handleDetected(data) {
+    const code = data?.codeResult?.code;
+    if (code) {
+      console.log('Detected:', code);
+      setResult(code);
+      setScanning(false);
+      alert(`Barcode scanned: ${code}`);
+    }
+  }
+
+  function startScanning() {
+    setResult('');
+    setScanning(true);
+  }
+
+  function stopScanning() {
+    setScanning(false);
+  }
 
   return (
-    <div className="scanner-overlay fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
-      <div className="relative w-full h-full max-w-full max-h-full p-4 flex items-center justify-center">
-        <div className="video-container w-full h-3/4 md:h-auto">
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover rounded-md"
-            autoPlay
-            playsInline
-            muted
-          />
-          {/* Scanner animation overlay */}
-          <div className="scan-line-container absolute inset-0 pointer-events-none">
-            <div className="scan-line"></div>
+    <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '1rem' }}>
+        {/* <button onClick={startScanning} disabled={scanning} style={{ marginRight: '0.5rem' }}>
+          Scan
+        </button> */}
+        <Button onClick={stopScanning} disabled={!scanning} variant="outlined" color="secondary">
+            Cancel
+        </Button>
+      </div>
+
+      {scanning && (
+        <div style={{ position: 'relative' }}>
+          <div ref={videoRef} style={{ width: '100%', height: '400px', overflow: 'hidden' }} />
+
+          {/* Scan-line overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              overflow: 'hidden',
+            }}
+          >
+            <div className="scan-line" />
           </div>
         </div>
-      </div>
-      <button
-        onClick={handleClose}
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-      >
-        Cancel
-      </button>
+      )}
+
+      {result && (
+        <div style={{ marginTop: '1rem' }}>
+          <h2>Result: {result}</h2>
+        </div>
+      )}
     </div>
   );
-};
-
-export default BarcodeScanner;
+}

@@ -41,7 +41,7 @@ export default function Header() {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: '#34eb46' /* Green */ }}>
+      <AppBar position="static" sx={{ backgroundColor: '#065f46' /* Green */ }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant="h6" fontWeight="bold" sx={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
             Green-Check-Vanilla

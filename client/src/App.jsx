@@ -9,7 +9,7 @@ const Profile = lazy(() => import('./pages/ProfilePage'));
 
 function App() {
   return (
-    <div className='w-screen overflow-x-hidden h-screen border-2 border-red-500'>
+    <div className='w-screen overflow-x-hidden h-screen'>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           {/* Layout component will wrap all routes */}
