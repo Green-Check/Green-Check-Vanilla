@@ -6,17 +6,31 @@ import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CameraIcon from '@mui/icons-material/CameraAlt';
+import axios from 'axios';
+
 
 
 const HomePage = () => {
   const [barcode, setBarcode] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [product, setProduct] = useState(null);
 
-  const handleSubmit = (e) => {
+  const [showIncomeDropdown, setShowIncomeDropdown] = useState(false);
+  const [incomeRange, setIncomeRange] = useState('');
+
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log('Submitted barcode:', barcode);
+    console.log('Income range:', incomeRange);
+    try {
+      const res = await axios.post('/api/getProduct', { barcode, incomeRange });
+      console.log(res.data);
+      
+    } catch (err) {
+      console.error(err);
+    }  
+  
   };
   const handleBarcodeDetected = (code) => {
     setBarcode(code);
@@ -70,26 +84,52 @@ const HomePage = () => {
 
           {/* Action Buttons */}
         <div className="flex gap-4 justify-center flex-wrap">
-          <Button
-            variant="outlined"
-            startIcon={<WalletIcon />}
-            onClick={() => setOpenDialog(!scanning)}
-            sx={{
-              backgroundColor: '#F5F5DC',      // beige background
-              color: 'black',                  // black text
-              borderColor: 'black',            // black border
-              '&:hover': {
-                backgroundColor: '#EDE7D0',   // darker beige on hover
+          <div className="relative">
+            <Button
+              variant="outlined"
+              startIcon={<WalletIcon />}
+              onClick={() => setShowIncomeDropdown(!showIncomeDropdown)}
+              sx={{
+                backgroundColor: '#F5F5DC',
+                color: 'black',
                 borderColor: 'black',
-              },
-              px: 3,  // padding x (left-right)
-              py: 1.5, // padding y (top-bottom)
-              borderRadius: '12px', // rounded corners
-              borderBottom: '4px solid #3C2A21', // bottom border
-            }}
-          >
-            Set Income Range
-          </Button>
+                '&:hover': {
+                  backgroundColor: '#EDE7D0',
+                  borderColor: 'black',
+                },
+                px: 3,
+                py: 1.5,
+                borderRadius: '12px',
+                borderBottom: '4px solid #3C2A21',
+                fontWeight: '600',
+                textTransform: 'none',
+              }}
+            >
+              {incomeRange ? incomeRange : 'Set Income Range'}
+            </Button>
+
+            {/* Dropdown menu */}
+            <div
+              className={`absolute top-full mt-2 left-0 w-60 bg-white border border-gray-300 rounded-xl shadow-lg z-10 transform transition-all duration-300 ease-in-out origin-top ${
+                showIncomeDropdown
+                  ? 'opacity-100 scale-100 pointer-events-auto'
+                  : 'opacity-0 scale-95 pointer-events-none'
+              }`}
+            >
+              {['Less than 30K', '30K to 70K', 'More than 70K'].map((option) => (
+                <div
+                  key={option}
+                  onClick={() => {
+                    setIncomeRange(option);
+                    setShowIncomeDropdown(false);
+                  }}
+                  className="px-5 py-3 hover:bg-gray-100 cursor-pointer text-sm font-medium text-gray-800 transition-colors duration-200"
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          </div>
 
           <Button
             variant="outlined"
@@ -139,21 +179,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Dialog */}
-      {openDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full">
-            <h2 className="text-lg font-bold mb-4">Set Income Range</h2>
-            <p className="text-sm text-gray-600 mb-4">Feature coming soon...</p>
-            <button
-              onClick={() => setOpenDialog(false)}
-              className="mt-2 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+     
     </main>
   );
 };
