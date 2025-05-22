@@ -1,9 +1,10 @@
 const express = require('express');
-const { createOrUpdateProduct, getProductByBarcode, getRecommendations } = require('../controllers/productController');
 const router = express.Router();
+// const get = require('../controllers/productController');
+// import { getProduct } from '../controllers/productController';
+const { getProduct } = require('../controllers/productController');
 
-router.post("/", createOrUpdateProduct);
-router.get("/:barcode", getProductByBarcode);
-router.get("/recommendations/search", getRecommendations);
+// POST route for getting a product by barcode and income range
+router.get('/getProduct', (req, res, next)=>{console.log("I am a middleware"); next}, getProduct);
 
 module.exports = router;

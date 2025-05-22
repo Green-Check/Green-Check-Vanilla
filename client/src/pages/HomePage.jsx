@@ -6,9 +6,8 @@ import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CameraIcon from '@mui/icons-material/CameraAlt';
+import ProductCard from '../components/ProductCard';
 import axios from 'axios';
-
-
 
 const HomePage = () => {
   const [barcode, setBarcode] = useState('');
@@ -24,9 +23,11 @@ const HomePage = () => {
     console.log('Submitted barcode:', barcode);
     console.log('Income range:', incomeRange);
     try {
-      const res = await axios.post('/api/getProduct', { barcode, incomeRange });
+      console.log("H1");
+      const res = await axios.get('/api/products/getProduct', { barcode, incomeRange }, {withCredentials: true});
+      console.log("H2");
       console.log(res.data);
-      
+      // setProduct(res.data);
     } catch (err) {
       console.error(err);
     }  
@@ -171,6 +172,10 @@ const HomePage = () => {
           <span className="bg-gray-100 px-4 py-1 rounded-full">Organic Fruit & Nut Bar</span>
         </div>
       </div>
+
+{/* Products display */}
+       {product && <ProductCard barcode={barcode}/>}
+
 
       {/* CTA */}
       <div className="mt-10 text-center">

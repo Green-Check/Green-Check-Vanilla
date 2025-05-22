@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
-const userRoutes = require('./routes/userRoutes');
+// const userRoutes = require('./routes/userRoutes');
 
 dotenv.config();
 const app = express();
@@ -13,12 +13,12 @@ app.use(cors());
 app.use(express.json());
 
 // Example test route
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+// app.get("/", (req, res) => {
+//   res.send("API is running...");
+// });
 
 app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
+// app.use('/api/users', userRoutes);
 
 // Catch-all route for undefined paths
 app.use((req, res, next) => {

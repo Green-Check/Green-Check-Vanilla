@@ -1,46 +1,44 @@
-const mongoose = require('mongoose');
+// productModel.js
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  barcode: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  name: String,
-  description: String,
-  category: String,
-  image: String,
-  brand: String,
-  price: Number,
-  currency: {
-    type: String,
-    default: "INR"
-  },
-  healthScore: Number, // e.g., 0-100
-  healthStatus: {
-    type: String,
-    enum: ["low", "moderate", "high"]
-  },
-  calories: Number,
-  serving: {
-    quantity: Number,
-    unit: String,
-    description: String
-  },
-  nutrients: {
-    carbs: Number,
-    protein: Number,
-    fat: Number,
-    fiber: Number,
-    sugar: Number,
-    sodium: Number
-  },
-  ingredients: [String],
-  allergens: String,
-  lastUpdated: {
-    type: Date,
-    default: Date.now
-  }
+    id: String,
+    barcode: String,
+    name: String,
+    description: String,
+    healthScore: Number,
+    category: String,
+    image: String,
+    brand: String,
+    lastUpdated: String,
+    calories: Number,
+    servingSize: String,
+    nutrients: {
+        carbs: Number,
+        protein: Number,
+        fat: Number
+    },
+    ingredients: [String],
+    allergens: String,
+    healthStatus: String,
+    price: Number,
+    pricePerServing: Number,
+    valueRating: Number,
+    incomeSuitability: [String],
+    alternatives: [
+        {
+            id: String,
+            name: String,
+            description: String,
+            healthScore: Number,
+            image: String,
+            healthStatus: String,
+            price: Number,
+            pricePerServing: Number,
+            valueRating: Number,
+            incomeSuitability: [String]
+        }
+    ]
 });
 
 module.exports = mongoose.model("Product", productSchema);
